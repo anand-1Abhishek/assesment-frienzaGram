@@ -3,7 +3,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/users.js');
 const router = express.Router();
-const {check, validationResult} = require('express-validator')
+const {check, validationResult} = require('express-validator');
+const authMiddleware = require('../middleware/authMiddleware.js');
 
 router.post('/signup', async (req, res) =>{
     const {username, password} = req.body;
@@ -63,6 +64,26 @@ router.post('/login', async(req, res) =>{
         return res.status(500).json({
             message:'Unable to login'
         })
+    }
+})
+
+router.get('/getUser/:id', authMiddleware, async (req, res) =>{
+    try {
+        const user = await User.findById(req.params.id).select('-password')
+
+        if(!user) return res.status(401).json({
+            message: 'User not found'
+        });
+
+        res.status(201).json({
+            message: 'user found',
+            user
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            message: 'Server side error'
+        });
     }
 })
 
