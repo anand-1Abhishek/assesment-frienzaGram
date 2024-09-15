@@ -79,6 +79,23 @@ router.post('/mutualFriend/:id',authMiddleware, async (req,res) =>{
             message: 'Server side error'
         });
     }
-}) 
+}) ;
+
+router.post('/allFriends',authMiddleware, async (req,res) =>{
+    try {
+        const user = await User.findById(req.user.id);
+
+        const friensAll = user.friends;
+
+        res.status(201).json({
+            friensAll
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            message: 'server side error'
+        });
+    }
+})
 
 module.exports = router;
