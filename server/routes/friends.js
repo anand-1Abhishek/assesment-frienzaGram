@@ -109,6 +109,36 @@ router.get('/allFriends', authMiddleware, async (req, res) => {
       });
     }
   });
+
+  // Unfriend a user
+router.post('/unfriend/:id', authMiddleware, async (req, res) => {
+    try {
+      const user = await User.findById(req.user.id);  // Current user
+      const friendUser = await User.findById(req.params.id);  // The user to unfriend
+  
+      if (!friendUser) {
+        return res.status(400).json({ msg: 'Friend not found' });
+      }
+  
+      // Check if they are friends
+      if (!user.friends.includes(friendUser.id)) {
+        return res.status(400).json({ msg: 'This user is not your friend' });
+      }
+  
+      // Remove the friend from both users' friends lists
+      user.friends = user.friends.filter(friendId => friendId.toString() !== friendUser.id);
+      friendUser.friends = friendUser.friends.filter(friendId => friendId.toString() !== user.id);
+  
+      await user.save();  // Save changes to the current user
+      await friendUser.save();  // Save changes to the unfriended user
+  
+      res.json({ msg: 'Successfully unfriended the user' });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ msg: 'Server error' });
+    }
+  });
+  
   
 
 module.exports = router;
