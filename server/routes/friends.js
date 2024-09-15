@@ -81,21 +81,18 @@ router.post('/mutualFriend/:id',authMiddleware, async (req,res) =>{
     }
 }) ;
 
-router.post('/allFriends',authMiddleware, async (req,res) =>{
+router.get('/allFriends', authMiddleware, async (req, res) => {
     try {
-        const user = await User.findById(req.user.id);
-
-        const friensAll = user.friends;
-
-        res.status(201).json({
-            friensAll
-        })
-
+      const user = await User.findById(req.user.id).populate('friends', 'username _id');
+      const friends = user.friends;
+  
+      res.status(200).json(friends);  // Return friends array directly
     } catch (error) {
-        return res.status(500).json({
-            message: 'server side error'
-        });
+      return res.status(500).json({
+        message: 'server side error'
+      });
     }
-})
+  });
+  
 
 module.exports = router;
