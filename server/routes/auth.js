@@ -79,6 +79,18 @@ router.post('/login', async(req, res) =>{
     }
 })
 
+router.get('/users/:id', async (req, res) => {
+    try {
+      const user = await User.findById(req.params.id);
+      if (!user) {
+        return res.status(404).json({ msg: 'User not found' });
+      }
+      res.json(user);
+    } catch (error) {
+      return res.status(500).json({ msg: 'Server error' });
+    }
+  });
+
 router.get('/users/search', authMiddleware, async (req, res) => {
     const { query } = req.query;
     if (!query) {

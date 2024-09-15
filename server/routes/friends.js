@@ -29,6 +29,22 @@ router.post('/request/:id',authMiddleware,  async(req, res) =>{
     }
 })
 
+router.get('/requests', authMiddleware, async (req, res) => {
+    try {
+      const user = await User.findById(req.user.id);
+      if (!user) return res.status(404).json({ msg: 'User not found' });
+  
+      const friendRequests = await User.find({
+        _id: { $in: user.friendRequests }
+      }).select('username _id');
+  
+      res.status(200).json(friendRequests);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ msg: 'Server error' });
+    }
+  });
+
 router.post('/accept/:id',authMiddleware, async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
