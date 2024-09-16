@@ -120,17 +120,16 @@ router.post('/unfriend/:id', authMiddleware, async (req, res) => {
         return res.status(400).json({ msg: 'Friend not found' });
       }
   
-      // Check if they are friends
+     
       if (!user.friends.includes(friendUser.id)) {
         return res.status(400).json({ msg: 'This user is not your friend' });
       }
   
-      // Remove the friend from both users' friends lists
       user.friends = user.friends.filter(friendId => friendId.toString() !== friendUser.id);
       friendUser.friends = friendUser.friends.filter(friendId => friendId.toString() !== user.id);
   
-      await user.save();  // Save changes to the current user
-      await friendUser.save();  // Save changes to the unfriended user
+      await user.save();  
+      await friendUser.save();  
   
       res.json({ msg: 'Successfully unfriended the user' });
     } catch (error) {
@@ -141,13 +140,12 @@ router.post('/unfriend/:id', authMiddleware, async (req, res) => {
   
   router.get('/recommendedUsers', authMiddleware, async (req, res) => {
     try {
-      // Retrieve the logged-in user
+      
       const user = await User.findById(req.user.id);
       if (!user) {
         return res.status(404).json({ msg: 'User not found' });
       }
   
-      // Retrieve all users excluding the logged-in user and friends
       const recommendedUsers = await User.find({
         _id: { $ne: user.id, $nin: user.friends }
       }).select('username _id');

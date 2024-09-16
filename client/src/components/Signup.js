@@ -3,8 +3,7 @@ import axios from 'axios';
 import { TextField, Button, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Import the toast styles
-
+import 'react-toastify/dist/ReactToastify.css'; 
 const Signup = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -30,8 +29,8 @@ const Signup = () => {
         position: 'top-right', 
       });
       setTimeout(() => {
-        navigate('/dashboard'); // Redirect to dashboard after signup
-      }, 1000); // Redirect after 1 second
+        navigate('/dashboard'); 
+      }, 1000); 
     } catch (error) {
       toast.error(error.response?.data?.msg || 'Signup failed', {
         position: 'top-right', 
@@ -95,7 +94,7 @@ const Signup = () => {
           </Button>
         </form>
       </div>
-      <ToastContainer /> {/* Toast container for notifications */}
+      <ToastContainer /> 
     </div>
   );
 };

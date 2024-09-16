@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Typography, Button, Card, CardContent, Grid, List, ListItem, ListItemText, ListItemSecondaryAction, ListItemButton } from '@mui/material';
-import { useParams, useNavigate } from 'react-router-dom'; // useNavigate to handle navigation
+import { useParams, useNavigate } from 'react-router-dom';
 
 const UserProfile = () => {
   const [userProfile, setUserProfile] = useState(null);
-  const [mutualFriends, setMutualFriends] = useState([]); // State to hold mutual friends
+  const [mutualFriends, setMutualFriends] = useState([]); 
   const [error, setError] = useState(null);
   const [isFriend, setIsFriend] = useState(false);
-  const { userId } = useParams(); // Get userId from URL
-  const navigate = useNavigate(); // For navigating to mutual friends' profiles
+  const { userId } = useParams(); 
+  const navigate = useNavigate(); 
 
   const token = localStorage.getItem('token');
   const headers = {
@@ -18,20 +18,17 @@ const UserProfile = () => {
     },
   };
 
-  // Fetch user profile and mutual friends on component mount
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
         const response = await axios.get(`http://localhost:3001/api/auth/users/${userId}`, headers);
         setUserProfile(response.data);
 
-        // Check if the user is a friend
         const friendsRes = await axios.get('http://localhost:3001/api/friends/allFriends', headers);
         setIsFriend(friendsRes.data.some(friend => friend._id === userId));
 
-        // Fetch mutual friends
         const mutualRes = await axios.post(`http://localhost:3001/api/friends/mutualFriend/${userId}`, {}, headers);
-        setMutualFriends(mutualRes.data.mutualFriends); // Set mutual friends data
+        setMutualFriends(mutualRes.data.mutualFriends); 
       } catch (error) {
         console.error('Error fetching user profile or mutual friends', error);
         setError('Error fetching user profile or mutual friends');
@@ -61,7 +58,7 @@ const UserProfile = () => {
     }
   };
 
-  // Function to navigate to the selected mutual friend's profile
+ 
   const viewMutualFriendProfile = (friendId) => {
     navigate(`/profile/${friendId}`);
   };
@@ -101,7 +98,6 @@ const UserProfile = () => {
               </Grid>
             </Grid>
 
-            {/* Mutual Friends Section */}
             <Typography variant="h6" className="mt-6">Mutual Friends</Typography>
             {mutualFriends.length > 0 ? (
               <List>
@@ -112,8 +108,8 @@ const UserProfile = () => {
                       <Button
                         variant="outlined"
                         color="primary"
-                        onClick={() => viewMutualFriendProfile(friend._id)} // Navigate to mutual friend's profile
-                        sx={{ marginLeft: '16px' }} // Adjust margin to position button closer
+                        onClick={() => viewMutualFriendProfile(friend._id)} 
+                        sx={{ marginLeft: '16px' }} 
                       >
                         View Profile
                       </Button>

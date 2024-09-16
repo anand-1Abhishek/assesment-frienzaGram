@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Card, CardContent, Typography, Button, Grid } from "@mui/material";
-import { useNavigate } from "react-router-dom"; // Use useNavigate instead of useHistory
+import { useNavigate } from "react-router-dom"; 
 
 const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const [friends, setFriends] = useState([]);
   const [friendRequests, setFriendRequests] = useState([]);
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // Use useNavigate instead of useHistory
+  const navigate = useNavigate(); 
 
   const token = localStorage.getItem("token");
 
@@ -21,19 +21,17 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch recommended users
+      
         const recommendedUsersRes = await axios.get(
           "http://localhost:3001/api/friends/recommendedUsers",
           headers
         );
 
-        // Fetch friends
         const friendsRes = await axios.get(
           "http://localhost:3001/api/friends/allFriends",
           headers
         );
 
-        // Fetch friend requests
         const requestsRes = await axios.get(
           `http://localhost:3001/api/friends/requests`,
           headers
@@ -51,7 +49,7 @@ const Dashboard = () => {
   }, []);
 
   const viewProfile = (userId) => {
-    navigate(`/profile/${userId}`); // Use navigate instead of history.push
+    navigate(`/profile/${userId}`); 
   };
 
   const sendFriendRequest = async (id) => {
@@ -74,15 +72,13 @@ const Dashboard = () => {
         headers
       );
 
-      // Filter out the accepted friend from friendRequests
       setFriendRequests(friendRequests.filter((req) => req._id !== id));
 
-      // Fetch the updated friends list
       const friendsRes = await axios.get(
         "http://localhost:3001/api/friends/allFriends",
         headers
       );
-      setFriends(friendsRes.data); // Update friends list after accepting the request
+      setFriends(friendsRes.data); 
     } catch (error) {
       setError("Failed to accept friend request");
     }
@@ -95,7 +91,7 @@ const Dashboard = () => {
         {},
         headers
       );
-      // Remove the friend from the list in the UI
+      
       setFriends(friends.filter((friend) => friend._id !== friendId));
     } catch (error) {
       setError("Failed to unfriend");
@@ -127,7 +123,7 @@ const Dashboard = () => {
                 <Button
                   variant="outlined"
                   color="secondary"
-                  onClick={() => viewProfile(user._id)} // Button to view profile
+                  onClick={() => viewProfile(user._id)} 
                 >
                   View Profile
                 </Button>
@@ -147,14 +143,14 @@ const Dashboard = () => {
                 <Button
                   variant="outlined"
                   color="secondary"
-                  onClick={() => viewProfile(friend._id)} // Button to view profile
+                  onClick={() => viewProfile(friend._id)} 
                 >
                   View Profile
                 </Button>
                 <Button
                   variant="contained"
                   color="secondary"
-                  onClick={() => unfriend(friend._id)} // Button to unfriend
+                  onClick={() => unfriend(friend._id)} 
                 >
                   Unfriend
                 </Button>

@@ -9,42 +9,38 @@ const authMiddleware = require('../middleware/authMiddleware.js');
 router.post('/signup', async (req, res) => {
     const { username, password, name, hobbies, bio } = req.body;
   
-    // Check if all required fields are provided
     if (!username || !password || !name) {
       return res.status(400).json({ msg: 'Please provide username, password, and name' });
     }
   
     try {
-      // Check if the user already exists
+  
       let user = await User.findOne({ username });
       if (user) {
         return res.status(400).json({ msg: 'User already exists' });
       }
   
-      // Create new user instance
       user = new User({
         username,
-        password: await bcrypt.hash(password, 7), // Hash the password
+        password: await bcrypt.hash(password, 7), 
         name,
-        hobbies, // Optional: Can be an empty array if not provided
-        bio // Optional: Can be an empty string if not provided
+        hobbies, 
+        bio 
       });
   
-      // Save the user to the database
       await user.save();
   
-      // Generate a JWT token
+    
       const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-        expiresIn: 3600, // Token expiration time in seconds
+        expiresIn: 3600, 
       });
   
-      // Respond with success message and token
+      
       res.status(201).json({
         message: 'User created successfully',
         token
       });
     } catch (error) {
-      // Handle server error
       console.error(error);
       return res.status(500).json({ msg: 'Server error' });
     }
@@ -64,7 +60,7 @@ router.post('/login', async(req, res) =>{
             mes: 'invalid credentials'
         });
 
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {  // Fixed jwt.sign
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {  
             expiresIn: 3600,
         });
 
@@ -99,10 +95,10 @@ router.get('/users/:id', async (req, res) => {
     }
   
     try {
-      // Perform case-insensitive search on the username field
+   
       const users = await User.find({
-        username: { $regex: username_id, $options: 'i' }, // Case-insensitive search for username
-      }).select('username _id'); // Only select username and _id
+        username: { $regex: username_id, $options: 'i' },
+      }).select('username _id'); 
   
       if (users.length === 0) {
         return res.status(404).json({ msg: 'No users found' });
@@ -110,7 +106,7 @@ router.get('/users/:id', async (req, res) => {
   
       res.json(users);
     } catch (error) {
-      console.error('Search Error:', error.message); // Log the error
+      console.error('Search Error:', error.message); 
       return res.status(500).json({ msg: 'Server error during search' });
     }
   });

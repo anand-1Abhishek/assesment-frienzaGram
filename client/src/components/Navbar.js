@@ -71,7 +71,6 @@ const Navbar = () => {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    // console.log("Token:", token); // Check if token is valid
     if (searchQuery.trim()) {
       try {
         const headers = {
@@ -165,7 +164,7 @@ const Navbar = () => {
               </Button>
             </form>
 
-            {/* Search Results Dropdown */}
+           
             {showResults && searchResults.length > 0 && (
               <List
                 style={{
@@ -185,13 +184,13 @@ const Navbar = () => {
                     key={user._id}
                     button
                     onClick={() => handleResultClick(user._id)}
-                    style={{ color: "black" }} // Ensure the list item text is visible
+                    style={{ color: "black" }} 
                   >
                     <ListItemText
                       primary={user.username}
                       style={{ color: "black" }}
                     />{" "}
-                    {/* Text Color */}
+                    
                     <ListItemSecondaryAction>
                       <Button
                         variant="contained"
@@ -208,7 +207,7 @@ const Navbar = () => {
           </div>
         )}
 
-        {/* Logout Button */}
+       
         {token && (
           <IconButton edge="end" color="inherit" onClick={handleLogout}>
             <LogoutIcon />
