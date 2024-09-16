@@ -139,6 +139,25 @@ router.post('/unfriend/:id', authMiddleware, async (req, res) => {
     }
   });
   
+  router.get('/recommendedUsers', authMiddleware, async (req, res) => {
+    try {
+      // Retrieve the logged-in user
+      const user = await User.findById(req.user.id);
+      if (!user) {
+        return res.status(404).json({ msg: 'User not found' });
+      }
+  
+      // Retrieve all users excluding the logged-in user and friends
+      const recommendedUsers = await User.find({
+        _id: { $ne: user.id, $nin: user.friends }
+      }).select('username _id');
+  
+      res.status(200).json(recommendedUsers);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ msg: 'Server error' });
+    }
+  });
   
 
 module.exports = router;

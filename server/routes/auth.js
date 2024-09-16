@@ -91,26 +91,36 @@ router.get('/users/:id', async (req, res) => {
     }
   });
 
-router.get('/users/search', authMiddleware, async (req, res) => {
-    const { query } = req.query;
-    if (!query) {
+  router.get('/user-search', authMiddleware, async (req, res) => {
+    const { username_id } = req.query;
+  
+    if (!username_id) {
       return res.status(400).json({ msg: 'No search query provided' });
     }
   
     try {
+      // Perform case-insensitive search on the username field
       const users = await User.find({
-        username: { $regex: query, $options: 'i' } // Case-insensitive search
-      }).select('username _id'); // Only return username and id for now
+        username: { $regex: username_id, $options: 'i' }, // Case-insensitive search for username
+      }).select('username _id'); // Only select username and _id
+  
+      if (users.length === 0) {
+        return res.status(404).json({ msg: 'No users found' });
+      }
   
       res.json(users);
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ msg: 'Server error' });
+      console.error('Search Error:', error.message); // Log the error
+      return res.status(500).json({ msg: 'Server error during search' });
     }
   });
+  
+  
+  
 
 router.get('/users', async (req, res) => {
     try {
+        
         const users = await User.find().select('-password');
         res.status(200).json(users);
     } catch (error) {
